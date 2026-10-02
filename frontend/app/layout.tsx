@@ -41,7 +41,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[#041014]">
         <div className="dashboard-shell min-h-screen flex flex-col">
           <Navbar />
-          <main className="flex-1 overflow-auto">{children}</main>
+          <main className="flex-1">{children}</main>
         </div>
       </body>
     </html>

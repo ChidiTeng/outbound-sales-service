@@ -94,7 +94,7 @@ export function SmartLeadsView() {
           <div className="stat-card highlight">
             <span className="stat-label">Active Buying Signals</span>
             <strong className="stat-value">342</strong>
-            <span className="stat-sub text-mint">Score &gt; 90%</span>
+            <span className="stat-sub text-purple">Score &gt; 90%</span>
           </div>
           <div className="stat-card">
             <span className="stat-label">Contact Verification</span>
@@ -386,12 +386,12 @@ export function SmartLeadsView() {
           aria-modal="true"
           aria-labelledby="enroll-modal-title"
         >
-          <div className="account-modal-content" style={{ maxWidth: "520px" }}>
-            <div className="modal-icon-wrap" aria-hidden="true">
+          <div className="account-modal-content cadence-modal-content" style={{ maxWidth: "540px" }}>
+            <div className="modal-icon-wrap cadence-icon-wrap" aria-hidden="true">
               🚀
             </div>
             <h3 id="enroll-modal-title">Enroll {selectedIds.length} Leads into Outreach</h3>
-            <p className="modal-desc">
+            <p className="modal-desc cadence-modal-desc">
               Select the outreach cadence to initiate. Personalized email, SMS, and in-person meeting tasks will be automatically scheduled in your Dashboard.
             </p>
 

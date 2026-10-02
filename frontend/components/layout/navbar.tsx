@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -15,9 +15,24 @@ const navItems = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 12);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <nav className="dashboard-navbar flex items-center justify-between text-white relative z-50">
+    <header className={cn("dashboard-header", isScrolled ? "is-scrolled" : "")}>
+      <nav
+        className="dashboard-navbar flex items-center justify-between text-white"
+        aria-label="Main navigation"
+      >
       {/* Logo */}
       <div className="flex items-center">
         <Link href="/sales-engine" className="flex items-center gap-2.5">
@@ -101,5 +116,6 @@ export function Navbar() {
         </div>
       </div>
     </nav>
-  );
+  </header>
+);
 }
