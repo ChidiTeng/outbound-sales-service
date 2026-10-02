@@ -57,7 +57,7 @@ export function ActivityDrawer({
       author: business.owner,
       status: "Opened (3x)",
       description: "Client opened the pilot implementation scope and reviewed the pricing appendix. Link clicked: 'SLA-Terms.pdf'.",
-      badgeColor: "#2ae9c9",
+      badgeColor: "#0284c7",
     },
     {
       id: "ev-2",
@@ -68,7 +68,7 @@ export function ActivityDrawer({
       author: business.owner,
       status: "Completed",
       description: `Met with procurement and engineering leads at ${business.company}. Finalized requirements for rollout. Next step: Account creation.`,
-      badgeColor: "#c974f4",
+      badgeColor: "#7c3aed",
     },
     {
       id: "ev-3",
@@ -79,7 +79,7 @@ export function ActivityDrawer({
       author: "Decision Maker",
       status: "Received",
       description: "“Thanks Michael, our team reviewed the proposal and approved the onboarding plan. Ready to open our enterprise account.”",
-      badgeColor: "#dc9c56",
+      badgeColor: "#d97706",
     },
     {
       id: "ev-4",
@@ -90,7 +90,7 @@ export function ActivityDrawer({
       author: "Sales Automation",
       status: "Replied",
       description: `Automated campaign sequence #4 targeted to ${business.industry} leaders in ${business.country}.`,
-      badgeColor: "#42a8a1",
+      badgeColor: "#0d9488",
     },
   ];
 
@@ -338,7 +338,7 @@ export function ActivityDrawer({
               </div>
               <div>
                 <span>Initial Status</span>
-                <strong style={{ color: "#2ae9c9" }}>Active Customer</strong>
+                <strong style={{ color: "#059669" }}>Active Customer</strong>
               </div>
             </div>
             <div className="modal-actions">
