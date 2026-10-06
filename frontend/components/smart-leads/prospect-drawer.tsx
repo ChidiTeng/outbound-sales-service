@@ -60,7 +60,7 @@ export function ProspectDrawer({
       id: `note-${Date.now()}`,
       text: newNote.trim(),
       time: "Just now",
-      author: "Sales Engineering",
+      author: "Sales Intelligence",
     };
     setUserNotes([noteObj, ...userNotes]);
     setNewNote("");
@@ -77,21 +77,23 @@ export function ProspectDrawer({
 
   const tierColor =
     prospect.tier === "high"
-      ? { text: "#f5d0fe", bg: "rgba(201, 116, 244, 0.18)", border: "rgba(201, 116, 244, 0.55)", label: "High Intent Priority" }
+      ? { text: "#7e22ce", bg: "#faf5ff", border: "#e9d5ff", label: "High Intent Priority" }
       : prospect.tier === "middle"
-      ? { text: "#fde68a", bg: "rgba(245, 158, 11, 0.18)", border: "rgba(245, 158, 11, 0.5)", label: "Middle Intent Priority" }
-      : { text: "#94a3b8", bg: "rgba(100, 116, 139, 0.18)", border: "rgba(100, 116, 139, 0.4)", label: "Low Intent Priority" };
+      ? { text: "#b45309", bg: "#fffbeb", border: "#fde68a", label: "Middle Intent Priority" }
+      : { text: "#475569", bg: "#f8fafc", border: "#cbd5e1", label: "Low Intent Priority" };
 
   return (
     <>
+      {/* Blurred Backdrop - identical to Dashboard ActivityDrawer */}
       <div
-        className={`drawer-backdrop ${isOpen ? "is-visible" : ""}`}
+        className={`activity-drawer-backdrop ${isOpen ? "is-visible" : ""}`}
         onClick={onClose}
         aria-hidden="true"
       />
 
-      <div
-        className={`activity-drawer-panel prospect-drawer-panel ${isOpen ? "is-open" : ""}`}
+      {/* Slide-Over Drawer Panel */}
+      <aside
+        className={`activity-drawer prospect-drawer-panel ${isOpen ? "is-open" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-label={`Prospect Dossier for ${prospect.company}`}
@@ -102,10 +104,11 @@ export function ProspectDrawer({
             <div
               className="drawer-company-avatar"
               style={{ backgroundColor: prospect.primaryContact.avatarColor }}
+              aria-hidden="true"
             >
               {prospect.company.charAt(0)}
             </div>
-            <div>
+            <div className="drawer-title-group">
               <div className="drawer-title-row">
                 <h2>{prospect.company}</h2>
                 <span
@@ -119,8 +122,16 @@ export function ProspectDrawer({
                   ⚡ {prospect.fitScore}% • {tierColor.label}
                 </span>
               </div>
-              <p className="drawer-subtitle">
-                {prospect.location} • {prospect.industry} • {prospect.revenue}
+              <p>
+                {prospect.location} • {prospect.industry} • {prospect.revenue} •{" "}
+                <a
+                  href={`https://${prospect.website}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="drawer-meta-link"
+                >
+                  {prospect.website} ↗
+                </a>
               </p>
             </div>
           </div>
@@ -128,83 +139,106 @@ export function ProspectDrawer({
             type="button"
             className="drawer-close-btn"
             onClick={onClose}
-            aria-label="Close drawer"
+            aria-label="Close dossier drawer"
           >
             ✕
           </button>
         </div>
 
-        {/* Drawer Body */}
+        {/* Scrollable Drawer Body */}
         <div className="drawer-body">
-          {/* Decision Maker Contact Section */}
-          <section className="drawer-section">
-            <h3 className="section-title">Verified Decision Maker</h3>
-            <div className="prospect-contact-card">
-              <div
-                className="contact-avatar-large"
-                style={{ backgroundColor: prospect.primaryContact.avatarColor }}
-              >
-                {prospect.primaryContact.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
+          {/* Executive Readiness Card */}
+          <div className="readiness-card">
+            <div className="readiness-header">
+              <span className="readiness-badge">
+                ⚡ {prospect.fitScore}% Deal Readiness • {prospect.intentLevel} Intent
+              </span>
+              <span className="readiness-owner">
+                Status: <strong>{prospect.status}</strong>
+              </span>
+            </div>
+            <p className="readiness-summary">
+              <strong>Why reach out now:</strong> {prospect.whyNow}
+            </p>
+            <div className="readiness-metrics-grid">
+              <div className="metric-pill">
+                <span>Buying Signal</span>
+                <strong className="truncate-text" title={prospect.intentTrigger}>
+                  {prospect.intentTrigger}
+                </strong>
               </div>
-              <div className="contact-info-col">
-                <div className="contact-name-row">
+              <div className="metric-pill">
+                <span>Account Scale</span>
+                <strong>{prospect.employees} employees</strong>
+              </div>
+              <div className="metric-pill">
+                <span>Annual Revenue</span>
+                <strong>{prospect.revenue}</strong>
+              </div>
+              <div className="metric-pill">
+                <span>Touchpoints Logged</span>
+                <strong>{activities.length} touches</strong>
+              </div>
+            </div>
+          </div>
+
+          {/* Key Stakeholders / Decision Maker Section */}
+          <div className="stakeholders-section">
+            <h3>Verified Decision Maker</h3>
+            <div className="stakeholder-list">
+              <div className="stakeholder-card">
+                <div
+                  className="stakeholder-avatar"
+                  style={{ backgroundColor: prospect.primaryContact.avatarColor }}
+                >
+                  {prospect.primaryContact.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </div>
+                <div className="stakeholder-info">
                   <strong>{prospect.primaryContact.name}</strong>
-                  {prospect.primaryContact.verified && (
-                    <span className="verified-pill">✓ Verified Contact</span>
-                  )}
+                  <span>{prospect.primaryContact.title}</span>
                 </div>
-                <span className="contact-role-text">
-                  {prospect.primaryContact.title}
-                </span>
-
-                <div className="contact-actions-row">
-                  <button
-                    type="button"
-                    className="contact-action-badge"
-                    onClick={handleCopyEmail}
-                  >
-                    ✉ {prospect.primaryContact.email}
-                    {copiedEmail && <span className="copied-note">Copied!</span>}
-                  </button>
-                  <a
-                    href={`tel:${prospect.primaryContact.phone}`}
-                    className="contact-action-badge"
-                  >
-                    📞 {prospect.primaryContact.phone}
-                  </a>
-                  <a
-                    href={`https://${prospect.website}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="contact-action-badge"
-                  >
-                    🌐 {prospect.website} ↗
-                  </a>
-                </div>
+                {prospect.primaryContact.verified && (
+                  <span className="stakeholder-tag primary-contact">✓ Verified Contact</span>
+                )}
               </div>
             </div>
-          </section>
 
-          {/* Buying Intent & Trigger */}
-          <section className="drawer-section">
-            <h3 className="section-title">Buying Signal & Intent Intelligence</h3>
-            <div className="prospect-intent-highlight">
-              <div className="intent-trigger-headline">
-                <span className="intent-icon">🔥</span>
-                <strong>Trigger:</strong> {prospect.intentTrigger}
-              </div>
-              <p className="intent-rationale-body">
-                <strong>Why reach out now:</strong> {prospect.whyNow}
-              </p>
+            {/* Quick Contact Action Badges */}
+            <div className="contact-actions-row" style={{ marginTop: "10px" }}>
+              <button
+                type="button"
+                className="contact-action-badge"
+                onClick={handleCopyEmail}
+                title="Click to copy email address"
+              >
+                ✉ {prospect.primaryContact.email}
+                {copiedEmail && <span className="copied-note">Copied!</span>}
+              </button>
+              <a
+                href={`tel:${prospect.primaryContact.phone}`}
+                className="contact-action-badge"
+                title="Call phone number"
+              >
+                📞 {prospect.primaryContact.phone}
+              </a>
+              <a
+                href={`https://${prospect.website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-action-badge"
+                title="Open company website"
+              >
+                🌐 {prospect.website} ↗
+              </a>
             </div>
-          </section>
+          </div>
 
-          {/* Tech Stack */}
-          <section className="drawer-section">
-            <h3 className="section-title">Verified Tech Stack & Infrastructure</h3>
+          {/* Tech Stack & Infrastructure Section */}
+          <div className="stakeholders-section">
+            <h3>Verified Tech Stack & Infrastructure</h3>
             <div className="tech-stack-row">
               {prospect.techStack.map((tech) => (
                 <span key={tech} className="tech-stack-tag">
@@ -212,124 +246,128 @@ export function ProspectDrawer({
                 </span>
               ))}
             </div>
-          </section>
+          </div>
 
-          {/* Account Activity Timeline */}
-          <section className="drawer-section">
-            <div className="section-header-split">
-              <h3 className="section-title">Account Activity & Live Touches</h3>
+          {/* Timeline Filter Tabs */}
+          <div className="timeline-nav">
+            <div className="section-header-split" style={{ marginBottom: "8px" }}>
+              <h3>Account Touches & Signal Stream</h3>
               <div className="timeline-tabs" role="tablist">
-                <button
-                  type="button"
-                  className={`timeline-tab ${activeTab === "all" ? "is-active" : ""}`}
-                  onClick={() => setActiveTab("all")}
-                >
-                  All ({activities.length + userNotes.length})
-                </button>
-                <button
-                  type="button"
-                  className={`timeline-tab ${activeTab === "emails" ? "is-active" : ""}`}
-                  onClick={() => setActiveTab("emails")}
-                >
-                  Emails
-                </button>
-                <button
-                  type="button"
-                  className={`timeline-tab ${activeTab === "signals" ? "is-active" : ""}`}
-                  onClick={() => setActiveTab("signals")}
-                >
-                  Signals
-                </button>
-                <button
-                  type="button"
-                  className={`timeline-tab ${activeTab === "notes" ? "is-active" : ""}`}
-                  onClick={() => setActiveTab("notes")}
-                >
-                  Notes ({userNotes.length})
-                </button>
+                {(["all", "emails", "signals", "notes"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === tab}
+                    className={`timeline-tab ${activeTab === tab ? "is-active" : ""}`}
+                    onClick={() => setActiveTab(tab)}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                ))}
               </div>
             </div>
+          </div>
 
-            {/* Quick Add Note */}
-            <form onSubmit={handleAddNote} className="quick-note-form" style={{ marginBottom: "14px" }}>
-              <input
-                type="text"
-                value={newNote}
-                onChange={(e) => setNewNote(e.target.value)}
-                placeholder="Log a touchpoint or internal note on this account…"
-              />
-              <button type="submit" disabled={!newNote.trim()}>
-                Add Note
-              </button>
-            </form>
+          {/* Quick Note Input Form */}
+          <form className="quick-note-form" onSubmit={handleAddNote}>
+            <input
+              type="text"
+              value={newNote}
+              onChange={(e) => setNewNote(e.target.value)}
+              placeholder="Log an SDR memo, touchpoint note, or intent trigger detail…"
+            />
+            <button type="submit" disabled={!newNote.trim()}>
+              Add Note
+            </button>
+          </form>
 
-            {/* Activity Stream */}
-            <div className="timeline-stream">
-              {/* User Notes */}
-              {(activeTab === "all" || activeTab === "notes") &&
-                userNotes.map((note) => (
-                  <div key={note.id} className="timeline-event-card note-card">
-                    <div className="event-meta">
-                      <span className="event-type-badge" style={{ color: "#c974f4" }}>
-                        Internal Note
-                      </span>
-                      <span className="event-status">{note.author}</span>
-                      <span className="event-time" style={{ marginLeft: "auto" }}>
-                        {note.time}
-                      </span>
-                    </div>
-                    <p className="event-description">{note.text}</p>
+          {/* User Added Notes Stream */}
+          {userNotes.length > 0 && (activeTab === "all" || activeTab === "notes") && (
+            <div className="user-notes-stream">
+              {userNotes.map((note) => (
+                <div key={note.id} className="timeline-event-card user-note">
+                  <div className="event-meta">
+                    <span className="event-type-badge note-badge">Internal Note</span>
+                    <span className="event-time">{note.time} by {note.author}</span>
                   </div>
-                ))}
-
-              {/* System Activities */}
-              {activeTab !== "notes" &&
-                filteredActivities.map((act) => (
-                  <div key={act.id} className="timeline-event-card">
-                    <div className="event-meta">
-                      <span
-                        className="event-type-badge"
-                        style={{ color: act.badgeColor }}
-                      >
-                        {act.channel}
-                      </span>
-                      <span className="event-status">{act.status}</span>
-                      <span className="event-time" style={{ marginLeft: "auto" }}>
-                        {act.time}
-                      </span>
-                    </div>
-                    <strong className="event-title">{act.title}</strong>
-                    <p className="event-description">{act.description}</p>
-                  </div>
-                ))}
-
-              {filteredActivities.length === 0 && userNotes.length === 0 && (
-                <div className="empty-activities-notice">
-                  No activity records logged for this filter yet.
+                  <p className="event-desc">{note.text}</p>
                 </div>
-              )}
+              ))}
             </div>
-          </section>
+          )}
+
+          {/* Touchpoint Timeline Feed */}
+          <div className="timeline-stream">
+            {activeTab !== "notes" &&
+              filteredActivities.map((act) => (
+                <div key={act.id} className="timeline-event-card">
+                  <div className="event-meta">
+                    <span
+                      className="event-type-badge"
+                      style={{ borderColor: act.badgeColor, color: act.badgeColor }}
+                    >
+                      {act.channel}
+                    </span>
+                    <span className="event-status">{act.status}</span>
+                    <span className="event-time">{act.time}</span>
+                  </div>
+                  <h4 className="event-title">{act.title}</h4>
+                  <p className="event-desc">{act.description}</p>
+                  <div className="event-footer">
+                    <span>Logged by: <strong>{act.author}</strong></span>
+                  </div>
+                </div>
+              ))}
+
+            {filteredActivities.length === 0 && userNotes.length === 0 && (
+              <div className="empty-activities-notice">
+                No activity records logged for this filter yet.
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Drawer Footer Actions */}
+        {/* Sticky Action Footer */}
         <div className="drawer-footer">
           <div className="drawer-footer-status">
-            <span>Current Status:</span>
+            <span>Status</span>
             <strong>{prospect.status}</strong>
           </div>
-          <button
-            type="button"
-            className="drawer-enroll-cta"
-            onClick={() => {
-              onEnroll(prospect);
-              onClose();
-            }}
-          >
-            + Enroll in Automated Cadence
-          </button>
+          <div className="drawer-footer-actions">
+            <button
+              type="button"
+              className="drawer-secondary-btn"
+              onClick={() => {
+                const note = prompt("Quick note to append to timeline:", "");
+                if (note && note.trim()) {
+                  setUserNotes([
+                    {
+                      id: `note-${Date.now()}`,
+                      text: note.trim(),
+                      time: "Just now",
+                      author: "AE Quick Note",
+                    },
+                    ...userNotes,
+                  ]);
+                }
+              }}
+            >
+              + Log Note
+            </button>
+            <button
+              type="button"
+              className="drawer-primary-btn"
+              onClick={() => {
+                onEnroll(prospect);
+                onClose();
+              }}
+            >
+              ⚡ Enroll in Sequence ➜
+            </button>
+          </div>
         </div>
-      </div>
+      </aside>
     </>
   );
 }

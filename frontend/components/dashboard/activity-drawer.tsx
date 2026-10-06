@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import type { OutreachBusiness } from "@/lib/outreach-dashboard";
+import { BusinessLogo } from "./business-logo";
 
 interface ActivityDrawerProps {
   isOpen: boolean;
@@ -132,13 +133,12 @@ export function ActivityDrawer({
         {/* Drawer Header */}
         <div className="drawer-header">
           <div className="drawer-header-left">
-            <span
-              className="drawer-avatar"
-              style={{ backgroundColor: business.avatarColor }}
-              aria-hidden="true"
-            >
-              <Image src="/dashboard-design/338d7.png" alt="" width={32} height={36} />
-            </span>
+            <BusinessLogo
+              id={business.id}
+              name={business.name}
+              color={business.avatarColor}
+              size={42}
+            />
             <div className="drawer-title-group">
               <h2>{business.name}</h2>
               <p>

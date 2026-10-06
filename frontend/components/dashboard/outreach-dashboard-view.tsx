@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { OutreachDashboardData, OutreachBusiness } from "@/lib/outreach-dashboard";
 import { ActivityDrawer } from "./activity-drawer";
+import { BusinessLogo } from "./business-logo";
 
 const asset = (name: string) => `/dashboard-design/${name}`;
 const number = (value: number | null | undefined) => (value == null ? "—" : value.toLocaleString("en-US"));
@@ -279,7 +280,11 @@ export function OutreachDashboardView({ data }: { data: OutreachDashboardData })
                             }}
                           >
                             <td className="business-avatar-cell">
-                              <Avatar color={item.avatarColor} />
+                              <BusinessLogo
+                                id={"businessId" in item ? item.businessId : item.id}
+                                name={item.name}
+                                color={item.avatarColor}
+                              />
                             </td>
                             {cells.map(([label, value]) => (
                               <td key={label}>
