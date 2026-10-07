@@ -3,7 +3,7 @@
 import React from "react";
 
 interface BusinessLogoProps {
-  id?: string;
+  id?: string | null;
   name: string;
   color?: string;
   size?: number;
@@ -11,7 +11,7 @@ interface BusinessLogoProps {
 }
 
 // Crisp, corporate vector glyphs for modern B2B SaaS and enterprise brands
-function renderCompanyGlyph(key: string, name: string) {
+function renderCompanyGlyph(key: string | null | undefined, name: string) {
   const normalized = (key || name).toLowerCase();
 
   if (normalized.includes("alpine") || normalized.includes("robotics")) {

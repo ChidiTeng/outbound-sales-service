@@ -281,7 +281,7 @@ export function OutreachDashboardView({ data }: { data: OutreachDashboardData })
                           >
                             <td className="business-avatar-cell">
                               <BusinessLogo
-                                id={"businessId" in item ? item.businessId : item.id}
+                                id={businessId}
                                 name={item.name}
                                 color={item.avatarColor}
                               />
