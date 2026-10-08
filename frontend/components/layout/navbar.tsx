@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ChevronDown, LogOut, Settings, Users } from "lucide-react";
 
 const navItems = [
   { name: "Dashboard", href: "/sales-engine", icon: "/dashboard-design/469fa.svg" },
@@ -16,6 +17,7 @@ const navItems = [
 export function Navbar() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,34 +87,90 @@ export function Navbar() {
         >
           <Image src="/dashboard-design/26ef3.svg" alt="Notifications" width={24} height={24} />
         </button>
-        <button
-          type="button"
-          aria-label="Outreach settings"
-          className="hidden sm:block cursor-pointer hover:opacity-80 transition-opacity bg-transparent border-0 p-0"
-        >
-          <Image src="/dashboard-design/934c3.svg" alt="Settings" width={24} height={24} />
-        </button>
 
-        <div className="relative flex items-center gap-3 lg:gap-4">
-          <div className="hidden sm:block text-left">
-            <p className="text-sm font-semibold tracking-tight text-white leading-tight">
-              Kwame Smith
-            </p>
-            <p className="text-[11px] text-white/70 font-light leading-tight">
-              username@gmail.com
-            </p>
-          </div>
+        <div className="relative">
+          <button 
+            type="button"
+            className="relative flex items-center gap-3 lg:gap-4 bg-transparent border-0 cursor-pointer text-left"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            <div className="hidden sm:block">
+              <p className="text-sm font-semibold tracking-tight text-white leading-tight">
+                Kwame Smith
+              </p>
+              <p className="text-[11px] text-white/70 font-light leading-tight">
+                username@gmail.com
+              </p>
+            </div>
 
-          {/* Avatar */}
-          <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full overflow-hidden border-2 border-white/10 p-0.5 bg-white/10 flex items-center justify-center">
-            <Image
-              src="/dashboard-design/e81cf.png"
-              alt="Kwame Smith"
-              width={44}
-              height={44}
-              className="w-full h-full object-cover rounded-full"
-            />
-          </div>
+            {/* Avatar */}
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full overflow-hidden border-2 border-white/10 p-0.5 bg-white/10 flex items-center justify-center">
+                <Image
+                  src="/dashboard-design/e81cf.png"
+                  alt="Kwame Smith"
+                  width={44}
+                  height={44}
+                  className="w-full h-full object-cover rounded-full"
+                />
+              </div>
+              <ChevronDown className="text-white/70 w-4 h-4" />
+            </div>
+          </button>
+
+          {/* Dropdown Menu */}
+          {isDropdownOpen && (
+            <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-white/10 bg-[#0f2a33] shadow-lg shadow-black/20 overflow-hidden z-50">
+              {/* User Info Header */}
+              <div className="p-4 border-b border-white/10 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 p-0.5 bg-white/10 flex items-center justify-center shrink-0">
+                  <Image
+                    src="/dashboard-design/e81cf.png"
+                    alt="Kwame Smith"
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Kwame Smith</p>
+                  <p className="text-xs text-white/60">username@gmail.com</p>
+                </div>
+              </div>
+
+              {/* Menu Items */}
+              <div className="p-2">
+                <Link
+                  href="/sales-engine/settings"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-white/80 hover:bg-white/5 hover:text-white transition-colors"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  <Settings className="w-4 h-4" />
+                  Settings
+                </Link>
+                <Link
+                  href="/sales-engine/account-management"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-white/80 hover:bg-white/5 hover:text-white transition-colors"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  <Users className="w-4 h-4" />
+                  Account Management
+                </Link>
+              </div>
+
+              {/* Logout */}
+              <div className="p-2 border-t border-white/10">
+                <button
+                  type="button"
+                  className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#ff6b6b] hover:bg-[#ff6b6b]/10 transition-colors bg-transparent border-0 cursor-pointer"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  <LogOut className="w-4 h-4" />
+                  Log out
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </nav>
