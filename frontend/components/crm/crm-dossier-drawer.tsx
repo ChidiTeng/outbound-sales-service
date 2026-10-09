@@ -1,27 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { SocialLead } from "@/lib/social-listening";
+import type { CrmDeal } from "@/lib/crm";
+import { getStageLabel } from "@/lib/crm";
 import type { SmartLeadActivity } from "@/lib/smart-leads";
 
-interface SocialDossierDrawerProps {
+interface CrmDossierDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  lead: SocialLead | null | undefined;
-  onEnroll: (lead: SocialLead) => void;
+  deal: CrmDeal | null | undefined;
+  onAdvanceStage: (deal: CrmDeal) => void;
 }
 
-export function SocialDossierDrawer({
+export function CrmDossierDrawer({
   isOpen,
   onClose,
-  lead,
-  onEnroll,
-}: SocialDossierDrawerProps) {
-  const [activeTab, setActiveTab] = useState<"all" | "signals" | "outreach" | "notes">("all");
+  deal,
+  onAdvanceStage,
+}: CrmDossierDrawerProps) {
+  const [activeTab, setActiveTab] = useState<"all" | "deals" | "emails" | "notes">("all");
   const [newNote, setNewNote] = useState("");
   const [userNotes, setUserNotes] = useState<{ id: string; text: string; time: string; author: string }[]>([]);
   const [copiedEmail, setCopiedEmail] = useState(false);
-  const [copiedAiReply, setCopiedAiReply] = useState(false);
+  const [copiedStrategy, setCopiedStrategy] = useState(false);
 
   // Close on Escape key
   useEffect(() => {
@@ -46,20 +47,22 @@ export function SocialDossierDrawer({
     };
   }, [isOpen]);
 
-  if (!lead) return null;
+  if (!deal) return null;
+
+  const stageInfo = getStageLabel(deal.stage);
 
   function handleCopyEmail() {
-    if (!lead) return;
-    navigator.clipboard.writeText(lead.primaryContact.email);
+    if (!deal) return;
+    navigator.clipboard.writeText(deal.primaryContact.email);
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2000);
   }
 
-  function handleCopyAiReply() {
-    if (!lead?.aiDraftedReply) return;
-    navigator.clipboard.writeText(lead.aiDraftedReply);
-    setCopiedAiReply(true);
-    setTimeout(() => setCopiedAiReply(false), 2000);
+  function handleCopyStrategy() {
+    if (!deal?.suggestedAction) return;
+    navigator.clipboard.writeText(deal.suggestedAction);
+    setCopiedStrategy(true);
+    setTimeout(() => setCopiedStrategy(false), 2000);
   }
 
   function handleAddNote(e: React.FormEvent) {
@@ -69,44 +72,27 @@ export function SocialDossierDrawer({
       id: `note-${Date.now()}`,
       text: newNote.trim(),
       time: "Just now",
-      author: "Sales Intelligence",
+      author: "Enterprise Account Executive",
     };
     setUserNotes([noteObj, ...userNotes]);
     setNewNote("");
   }
 
-  const activities: SmartLeadActivity[] = lead.activities || [];
+  const activities: SmartLeadActivity[] = deal.activities || [];
 
   const filteredActivities = activities.filter((act) => {
     if (activeTab === "all") return true;
-    if (activeTab === "signals") return act.type === "signal" || act.type === "visit";
-    if (activeTab === "outreach") return act.type === "email" || act.type === "meeting" || act.type === "call";
+    if (activeTab === "deals") return act.type === "meeting" || act.type === "signal";
+    if (activeTab === "emails") return act.type === "email" || act.type === "call";
     return true;
   });
 
-  const getPlatformLabel = (platform: string) => {
-    switch (platform) {
-      case "linkedin":
-        return { name: "LinkedIn", color: "#0077b5" };
-      case "twitter":
-        return { name: "X / Twitter", color: "#0284c7" };
-      case "reddit":
-        return { name: "Reddit", color: "#ea580c" };
-      case "github":
-        return { name: "GitHub", color: "#7c3aed" };
-      default:
-        return { name: "Web / News", color: "#0d9488" };
-    }
-  };
-
-  const platformInfo = getPlatformLabel(lead.socialMention.platform);
-
   const tierColor =
-    lead.tier === "high"
-      ? { text: "#7e22ce", bg: "#faf5ff", border: "#e9d5ff", label: "High Intent Priority" }
-      : lead.tier === "middle"
-      ? { text: "#b45309", bg: "#fffbeb", border: "#fde68a", label: "Middle Intent Priority" }
-      : { text: "#475569", bg: "#f8fafc", border: "#cbd5e1", label: "Low Intent Priority" };
+    deal.tier === "high"
+      ? { text: "#7e22ce", bg: "#faf5ff", border: "#e9d5ff", label: "Enterprise Tier" }
+      : deal.tier === "middle"
+      ? { text: "#b45309", bg: "#fffbeb", border: "#fde68a", label: "Mid-Market Tier" }
+      : { text: "#475569", bg: "#f8fafc", border: "#cbd5e1", label: "Growth Tier" };
 
   return (
     <>
@@ -122,22 +108,22 @@ export function SocialDossierDrawer({
         className={`activity-drawer prospect-drawer-panel ${isOpen ? "is-open" : ""}`}
         role="dialog"
         aria-modal="true"
-        aria-label={`Social Lead Dossier for ${lead.company}`}
+        aria-label={`CRM Opportunity Dossier for ${deal.company}`}
       >
         {/* Drawer Header */}
         <div className="drawer-header" style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box" }}>
           <div className="drawer-header-left" style={{ minWidth: 0, flex: 1, overflow: "hidden" }}>
             <div
               className="drawer-company-avatar"
-              style={{ backgroundColor: lead.primaryContact.avatarColor }}
+              style={{ backgroundColor: deal.primaryContact.avatarColor }}
               aria-hidden="true"
             >
-              {lead.company.charAt(0)}
+              {deal.company.charAt(0)}
             </div>
             <div className="drawer-title-group" style={{ minWidth: 0, flex: 1, overflow: "hidden" }}>
               <div className="drawer-title-row" style={{ flexWrap: "wrap", gap: "6px" }}>
                 <h2 style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {lead.company}
+                  {deal.company}
                 </h2>
                 <span
                   className="prospect-tier-pill"
@@ -148,18 +134,29 @@ export function SocialDossierDrawer({
                     flexShrink: 0,
                   }}
                 >
-                  ⚡ {lead.fitScore}% • {tierColor.label}
+                  ⚡ {tierColor.label}
+                </span>
+                <span
+                  className="prospect-tier-pill"
+                  style={{
+                    backgroundColor: stageInfo.bg,
+                    color: stageInfo.color,
+                    borderColor: stageInfo.border,
+                    flexShrink: 0,
+                  }}
+                >
+                  {stageInfo.label}
                 </span>
               </div>
               <p style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {lead.location} • {lead.industry} • {lead.revenue} •{" "}
+                {deal.location} • {deal.industry} • {deal.revenue} ARR •{" "}
                 <a
-                  href={`https://${lead.website}`}
+                  href={`https://${deal.website}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="drawer-meta-link"
                 >
-                  {lead.website} ↗
+                  {deal.website} ↗
                 </a>
               </p>
             </div>
@@ -168,7 +165,7 @@ export function SocialDossierDrawer({
             type="button"
             className="drawer-close-btn"
             onClick={onClose}
-            aria-label="Close dossier drawer"
+            aria-label="Close CRM opportunity drawer"
           >
             ✕
           </button>
@@ -176,22 +173,20 @@ export function SocialDossierDrawer({
 
         {/* Scrollable Drawer Body */}
         <div className="drawer-body">
-          {/* 1. Live Social Intent Card */}
-          <div className="readiness-card">
+          {/* 1. Executive Deal Readiness & Health Card */}
+          <div className="readiness-card" style={{ flexShrink: 0 }}>
             <div className="readiness-header">
-              <span className="readiness-badge">
-                ⚡ {lead.fitScore}% Intent Match • {platformInfo.name} Radar
+              <span className="readiness-badge" style={{ background: "#f5f3ff", color: "#7c3aed", borderColor: "#ddd6fe" }}>
+                ⚡ {deal.winProbability}% Win Likelihood • {deal.dealValue} ACV
               </span>
               <span className="readiness-owner">
-                Sentiment: <strong>{lead.socialMention.sentiment}</strong>
+                Stage Velocity: <strong>{deal.daysInStage}d in {stageInfo.label}</strong>
               </span>
             </div>
 
-            {/* Quoted Social Post Box */}
-            <div
-              className={`drawer-social-quote-box border-${lead.socialMention.platform}`}
-            >
-              "{lead.socialMention.fullContent || lead.socialMention.contentSnippet}"
+            {/* AI Deal Executive Summary */}
+            <div className="drawer-social-quote-box" style={{ borderLeftColor: "#7c3aed", margin: "14px 0 10px" }}>
+              "{deal.aiDealSummary}"
             </div>
 
             <div
@@ -207,103 +202,119 @@ export function SocialDossierDrawer({
               }}
             >
               <span style={{ minWidth: 0, wordBreak: "break-word" }}>
-                Posted by <strong>{lead.primaryContact.name}</strong> ({lead.socialMention.authorHandle}) • {lead.socialMention.postedAt}
+                Opportunity Owner: <strong>{deal.owner}</strong> • Expected Close: <strong>{deal.expectedCloseDate}</strong>
               </span>
-              <a
-                href={lead.socialMention.postUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="drawer-meta-link"
-                style={{ flexShrink: 0 }}
-              >
-                View Live Post ↗
-              </a>
+              <span style={{ fontSize: "11px", color: "#059669", fontWeight: 600 }}>
+                Status: {deal.status}
+              </span>
             </div>
 
+            {/* 2x2 Opportunity Telemetry Grid */}
             <div className="readiness-metrics-grid">
               <div className="metric-pill">
-                <span>Buying Intent Trigger</span>
-                <strong className="truncate-text" title={lead.socialMention.intentTrigger}>
-                  {lead.socialMention.intentTrigger}
+                <span>Contract Value (ACV)</span>
+                <strong className="truncate-text" style={{ color: "#0f172a", fontSize: "13px" }}>
+                  {deal.dealValue}
                 </strong>
               </div>
               <div className="metric-pill">
-                <span>Social Engagement</span>
-                <strong className="truncate-text">
-                  {lead.socialMention.engagementStats.likes} likes • {lead.socialMention.engagementStats.comments} replies
+                <span>Buying Signal Trigger</span>
+                <strong className="truncate-text" title={deal.dealTrigger}>
+                  {deal.dealTrigger}
                 </strong>
               </div>
               <div className="metric-pill">
                 <span>Account Scale</span>
-                <strong className="truncate-text">{lead.employees} employees</strong>
+                <strong className="truncate-text">{deal.employees} employees</strong>
               </div>
               <div className="metric-pill">
                 <span>Annual Revenue</span>
-                <strong className="truncate-text">{lead.revenue}</strong>
+                <strong className="truncate-text">{deal.revenue}</strong>
               </div>
             </div>
           </div>
 
-          {/* 2. AI Contextual Outreach Hook */}
-          {lead.aiDraftedReply && (
-            <div className="stakeholders-section">
-              <h3>✨ AI Contextual Outreach Hook</h3>
-              <div
-                style={{
-                  background: "#fdf4ff",
-                  border: "1px solid #f0abfc",
-                  borderRadius: "12px",
-                  padding: "14px",
-                  width: "100%",
-                  maxWidth: "100%",
-                  boxSizing: "border-box",
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexWrap: "wrap", gap: "6px" }}>
-                  <span style={{ fontSize: "11px", fontWeight: 700, color: "#86198f" }}>
-                    Recommended Social & Outbound Opener
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleCopyAiReply}
-                    className="contact-copy-pill"
-                    style={{ background: "#ffffff", borderColor: "#f0abfc", color: "#86198f" }}
-                  >
-                    {copiedAiReply ? "✓ Copied!" : "Copy Pitch"}
-                  </button>
-                </div>
-                <p style={{ margin: 0, fontSize: "12px", color: "#3b0764", lineHeight: "1.5", fontStyle: "italic", wordBreak: "break-word", overflowWrap: "break-word" }}>
-                  "{lead.aiDraftedReply}"
-                </p>
-                <div style={{ marginTop: "10px", fontSize: "11px", color: "#701a75", wordBreak: "break-word" }}>
-                  💡 <strong>Action:</strong> {lead.suggestedAction}
-                </div>
+          {/* 2. AI Next Best Action & Closing Strategy Hook */}
+          <div className="stakeholders-section" style={{ flexShrink: 0 }}>
+            <h3>✨ AI Next Best Action & Deal Strategy</h3>
+            <div
+              style={{
+                background: "#fdf4ff",
+                border: "1px solid #f0abfc",
+                borderRadius: "12px",
+                padding: "14px",
+                width: "100%",
+                maxWidth: "100%",
+                boxSizing: "border-box",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexWrap: "wrap", gap: "6px" }}>
+                <span style={{ fontSize: "11px", fontWeight: 700, color: "#86198f" }}>
+                  Recommended Action for {stageInfo.label}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCopyStrategy}
+                  className="contact-copy-pill"
+                  style={{ background: "#ffffff", borderColor: "#f0abfc", color: "#86198f" }}
+                >
+                  {copiedStrategy ? "✓ Copied!" : "Copy Strategy"}
+                </button>
+              </div>
+              <p style={{ margin: 0, fontSize: "12px", color: "#3b0764", lineHeight: "1.55", fontStyle: "italic", wordBreak: "break-word", overflowWrap: "break-word" }}>
+                "{deal.suggestedAction}"
+              </p>
+              <div style={{ marginTop: "10px", fontSize: "11px", color: "#701a75", wordBreak: "break-word" }}>
+                💡 <strong>Urgency Driver:</strong> {deal.whyNow}
               </div>
             </div>
-          )}
+          </div>
 
-          {/* 3. Verified Decision Maker Section */}
-          <div className="stakeholders-section">
-            <h3>Verified Decision Maker</h3>
+          {/* 3. Key Stakeholders & Internal Champion */}
+          <div className="stakeholders-section" style={{ flexShrink: 0 }}>
+            <h3>Verified Stakeholders & Internal Champion</h3>
             <div className="stakeholder-list">
+              {/* Primary Decision Maker */}
               <div className="stakeholder-card">
                 <div
                   className="stakeholder-avatar"
-                  style={{ backgroundColor: lead.primaryContact.avatarColor }}
+                  style={{ backgroundColor: deal.primaryContact.avatarColor }}
                 >
-                  {lead.primaryContact.name
+                  {deal.primaryContact.name
                     .split(" ")
                     .map((n) => n[0])
                     .join("")}
                 </div>
                 <div className="stakeholder-info">
-                  <strong>{lead.primaryContact.name}</strong>
-                  <span>{lead.primaryContact.title}</span>
+                  <strong>{deal.primaryContact.name}</strong>
+                  <span>{deal.primaryContact.title}</span>
                 </div>
-                {lead.primaryContact.verified && (
-                  <span className="stakeholder-tag primary-contact">✓ Verified Contact</span>
+                {deal.primaryContact.verified && (
+                  <span className="stakeholder-tag primary-contact">✓ Economic Buyer</span>
                 )}
               </div>
+
+              {/* Internal Champion if present */}
+              {deal.champion && (
+                <div className="stakeholder-card" style={{ marginTop: "8px", borderColor: "#ddd6fe" }}>
+                  <div
+                    className="stakeholder-avatar"
+                    style={{ backgroundColor: deal.champion.avatarColor }}
+                  >
+                    {deal.champion.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </div>
+                  <div className="stakeholder-info">
+                    <strong>{deal.champion.name}</strong>
+                    <span>{deal.champion.title}</span>
+                  </div>
+                  <span className="stakeholder-tag" style={{ background: "#f5f3ff", color: "#7c3aed", borderColor: "#ddd6fe" }}>
+                    ⭐ Internal Champion
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Direct Contact Actions */}
@@ -314,19 +325,19 @@ export function SocialDossierDrawer({
                 onClick={handleCopyEmail}
                 title="Click to copy email address"
               >
-                ✉ {lead.primaryContact.email}
+                ✉ {deal.primaryContact.email}
                 {copiedEmail && <span className="copied-note">Copied!</span>}
               </button>
               <a
-                href={`tel:${lead.primaryContact.phone}`}
+                href={`tel:${deal.primaryContact.phone}`}
                 className="contact-action-badge"
                 title="Call phone number"
               >
-                📞 {lead.primaryContact.phone}
+                📞 {deal.primaryContact.phone}
               </a>
-              {lead.primaryContact.linkedin && (
+              {deal.primaryContact.linkedin && (
                 <a
-                  href={lead.primaryContact.linkedin}
+                  href={deal.primaryContact.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="contact-action-badge"
@@ -338,20 +349,11 @@ export function SocialDossierDrawer({
             </div>
           </div>
 
-          {/* 4. Matched Trackers & Tech Stack */}
-          <div className="stakeholders-section">
-            <h3>Matched Keywords & Detected Tech Stack</h3>
+          {/* 4. Detected Tech Stack & Integrations */}
+          <div className="stakeholders-section" style={{ flexShrink: 0 }}>
+            <h3>Customer Tech Stack & Existing Tools</h3>
             <div className="tech-stack-row">
-              {lead.matchedKeywords.map((kw) => (
-                <span
-                  key={kw}
-                  className="tech-stack-tag"
-                  style={{ background: "#ecfdf5", color: "#047857", borderColor: "#a7f3d0" }}
-                >
-                  #{kw}
-                </span>
-              ))}
-              {lead.techStack.map((tech) => (
+              {deal.techStack.map((tech) => (
                 <span key={tech} className="tech-stack-tag">
                   {tech}
                 </span>
@@ -360,11 +362,11 @@ export function SocialDossierDrawer({
           </div>
 
           {/* 5. Activities & Timeline */}
-          <div className="timeline-nav">
+          <div className="timeline-nav" style={{ flexShrink: 0 }}>
             <div className="section-header-split" style={{ marginBottom: "8px" }}>
-              <h3>Touch History & Social Signals</h3>
+              <h3>Touch History & Deal Milestones</h3>
               <div className="timeline-tabs" role="tablist">
-                {(["all", "signals", "outreach", "notes"] as const).map((tab) => (
+                {(["all", "deals", "emails", "notes"] as const).map((tab) => (
                   <button
                     key={tab}
                     type="button"
@@ -373,7 +375,7 @@ export function SocialDossierDrawer({
                     className={`timeline-tab ${activeTab === tab ? "is-active" : ""}`}
                     onClick={() => setActiveTab(tab)}
                   >
-                    {tab === "all" ? "All" : tab === "signals" ? "Signals" : tab === "outreach" ? "Outreach" : "Notes"}
+                    {tab === "all" ? "All" : tab === "deals" ? "Deals & Meetings" : tab === "emails" ? "Emails" : "Notes"}
                   </button>
                 ))}
               </div>
@@ -381,12 +383,12 @@ export function SocialDossierDrawer({
           </div>
 
           {/* Quick Note Input Form */}
-          <form className="quick-note-form" onSubmit={handleAddNote}>
+          <form className="quick-note-form" onSubmit={handleAddNote} style={{ flexShrink: 0 }}>
             <input
               type="text"
               value={newNote}
               onChange={(e) => setNewNote(e.target.value)}
-              placeholder="Log an SDR memo, touchpoint note, or intent trigger detail…"
+              placeholder="Log deal update, contract redline memo, or next step note…"
             />
             <button type="submit" disabled={!newNote.trim()}>
               Add Note
@@ -395,11 +397,11 @@ export function SocialDossierDrawer({
 
           {/* User Added Notes Stream */}
           {userNotes.length > 0 && (activeTab === "all" || activeTab === "notes") && (
-            <div className="user-notes-stream">
+            <div className="user-notes-stream" style={{ flexShrink: 0 }}>
               {userNotes.map((note) => (
                 <div key={note.id} className="timeline-event-card user-note">
                   <div className="event-meta">
-                    <span className="event-type-badge note-badge">Internal Note</span>
+                    <span className="event-type-badge note-badge">AE Note</span>
                     <span className="event-time">{note.time} by {note.author}</span>
                   </div>
                   <p className="event-desc">{note.text}</p>
@@ -409,7 +411,7 @@ export function SocialDossierDrawer({
           )}
 
           {/* Touchpoint Timeline Feed */}
-          <div className="timeline-stream">
+          <div className="timeline-stream" style={{ flexShrink: 0 }}>
             {activeTab !== "notes" &&
               filteredActivities.map((act) => (
                 <div key={act.id} className="timeline-event-card">
@@ -442,8 +444,8 @@ export function SocialDossierDrawer({
         {/* Sticky Action Footer */}
         <div className="drawer-footer">
           <div className="drawer-footer-status">
-            <span>Status</span>
-            <strong>{lead.status}</strong>
+            <span>Current Stage</span>
+            <strong>{stageInfo.label} ({deal.winProbability}% Win)</strong>
           </div>
           <div className="drawer-footer-actions">
             <button
@@ -456,12 +458,16 @@ export function SocialDossierDrawer({
             <button
               type="button"
               className="drawer-primary-btn"
+              style={{
+                background: "linear-gradient(135deg, #7c3aed 0%, #9333ea 100%)",
+                color: "#ffffff",
+              }}
               onClick={() => {
-                onEnroll(lead);
+                onAdvanceStage(deal);
                 onClose();
               }}
             >
-              🚀 Launch Dual Cadence ➜
+              🚀 Advance Deal Stage ➜
             </button>
           </div>
         </div>

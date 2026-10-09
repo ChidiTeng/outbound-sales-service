@@ -374,6 +374,10 @@
   scrollbar-color: #cbd5e1 transparent;
 }
 
+.drawer-body > * {
+  flex-shrink: 0;
+}
+
 /* Executive Readiness Card */
 .readiness-card {
   background: #ffffff;
@@ -385,6 +389,7 @@
   max-width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .readiness-header {
   display: flex;
@@ -4860,3 +4865,230 @@
   align-items: center;
   gap: calc(4 * var(--ds));
 }
+
+/* Full readable quote card inside dossier drawer */
+.drawer-social-quote-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left-width: 3.5px;
+  border-radius: calc(10 * var(--ds));
+  padding: calc(12 * var(--ds)) calc(14 * var(--ds));
+  margin: calc(12 * var(--ds)) 0 calc(10 * var(--ds));
+  font-size: calc(12.5 * var(--ds));
+  color: #1e293b;
+  line-height: 1.55;
+  font-style: italic;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.drawer-social-quote-box.border-linkedin {
+  border-left-color: #0077b5;
+}
+
+.drawer-social-quote-box.border-twitter {
+  border-left-color: #38bdf8;
+}
+
+.drawer-social-quote-box.border-reddit {
+  border-left-color: #ff4500;
+}
+
+.drawer-social-quote-box.border-github {
+  border-left-color: #a855f7;
+}
+
+/* ==========================================================================
+   CRM KANBAN STAGE BOARD & VIEW MODE STYLES
+   ========================================================================== */
+
+.crm-view-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: #f1f5f9;
+  padding: calc(3 * var(--ds));
+  border-radius: calc(9 * var(--ds));
+  border: 1px solid #e2e8f0;
+  gap: calc(2 * var(--ds));
+}
+
+.crm-view-mode-btn {
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: calc(11 * var(--ds));
+  font-weight: 600;
+  padding: calc(4 * var(--ds)) calc(10 * var(--ds));
+  border-radius: calc(7 * var(--ds));
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(5 * var(--ds));
+}
+
+.crm-view-mode-btn:hover {
+  color: #0f172a;
+}
+
+.crm-view-mode-btn.is-active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.crm-kanban-board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(220px, 1fr));
+  gap: calc(14 * var(--ds));
+  padding: calc(16 * var(--ds));
+  overflow-x: auto;
+  box-sizing: border-box;
+  background: #f8fafc;
+  border-radius: calc(12 * var(--ds));
+  min-height: calc(380 * var(--ds));
+}
+
+.crm-kanban-column {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: calc(10 * var(--ds));
+  display: flex;
+  flex-direction: column;
+  min-width: calc(220 * var(--ds));
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.crm-kanban-col-header {
+  padding: calc(12 * var(--ds)) calc(14 * var(--ds));
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.crm-kanban-col-title {
+  font-size: calc(12 * var(--ds));
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--ds));
+}
+
+.crm-kanban-col-count {
+  font-size: calc(10.5 * var(--ds));
+  background: #f1f5f9;
+  color: #475569;
+  padding: calc(1 * var(--ds)) calc(6 * var(--ds));
+  border-radius: calc(8 * var(--ds));
+  font-weight: 700;
+}
+
+.crm-kanban-col-acv {
+  font-size: calc(11 * var(--ds));
+  font-weight: 700;
+  color: #64748b;
+}
+
+.crm-kanban-col-cards {
+  padding: calc(10 * var(--ds));
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--ds));
+  flex: 1;
+  overflow-y: auto;
+}
+
+.crm-kanban-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: calc(9 * var(--ds));
+  padding: calc(12 * var(--ds));
+  cursor: pointer;
+  transition: all 0.16s ease;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.crm-kanban-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 calc(4 * var(--ds)) calc(10 * var(--ds)) rgba(15, 23, 42, 0.08);
+}
+
+.crm-kanban-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(6 * var(--ds));
+  margin-bottom: calc(6 * var(--ds));
+}
+
+.crm-kanban-card-company {
+  font-size: calc(12.5 * var(--ds));
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.crm-kanban-card-val {
+  font-size: calc(12 * var(--ds));
+  font-weight: 800;
+  color: #7c3aed;
+}
+
+.crm-kanban-card-contact {
+  font-size: calc(11 * var(--ds));
+  color: #64748b;
+  margin-bottom: calc(8 * var(--ds));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.crm-kanban-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: calc(10.5 * var(--ds));
+  color: #94a3b8;
+  padding-top: calc(6 * var(--ds));
+  border-top: 1px solid #f8fafc;
+}
+
+.crm-sync-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(124, 58, 237, 0.06);
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  border-radius: calc(10 * var(--ds));
+  padding: calc(8 * var(--ds)) calc(14 * var(--ds));
+  margin-bottom: calc(14 * var(--ds));
+  font-size: calc(11.5 * var(--ds));
+  color: #581c87;
+  gap: calc(12 * var(--ds));
+  flex-wrap: wrap;
+}
+
+.crm-sync-btn {
+  background: #ffffff;
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  color: #7c3aed;
+  font-weight: 700;
+  font-size: calc(11 * var(--ds));
+  padding: calc(3 * var(--ds)) calc(10 * var(--ds));
+  border-radius: calc(6 * var(--ds));
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.crm-sync-btn:hover {
+  background: #f5f3ff;
+}
+
+
