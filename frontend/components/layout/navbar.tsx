@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { name: "Dashboard", href: "/sales-engine", icon: "/dashboard-design/469fa.svg" },
   { name: "Smart Leads", href: "/sales-engine/smart-leads", icon: "/dashboard-design/8ea52.svg" },
-  { name: "Social Listening", href: "#social-listening", icon: "/dashboard-design/d3b09.svg" },
+  { name: "Social Listening", href: "/sales-engine/social-listening", icon: "/dashboard-design/d3b09.svg" },
   { name: "CRM", href: "#crm", icon: "/dashboard-design/f4304.svg" },
 ];
 
