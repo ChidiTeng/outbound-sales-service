@@ -10,7 +10,7 @@ import { ChevronDown, LogOut, Settings, Users } from "lucide-react";
 const navItems = [
   { name: "Dashboard", href: "/sales-engine", icon: "/dashboard-design/469fa.svg" },
   { name: "Smart Leads", href: "/sales-engine/smart-leads", icon: "/dashboard-design/8ea52.svg" },
-  { name: "Social Listening", href: "#social-listening", icon: "/dashboard-design/d3b09.svg" },
+  { name: "Social Listening", href: "/sales-engine/social-listening", icon: "/dashboard-design/d3b09.svg" },
   { name: "CRM", href: "#crm", icon: "/dashboard-design/f4304.svg" },
 ];
 
@@ -173,6 +173,9 @@ export function Navbar() {
           )}
         </div>
       </div>
+    </nav>
+    <nav aria-label="Mobile navigation" className="flex lg:hidden gap-2 overflow-x-auto px-4 pb-3">
+      {navItems.map(item => <Link key={item.name} href={item.href} aria-current={pathname === item.href ? "page" : undefined} className={cn("shrink-0 rounded-full px-3 py-2 text-xs", pathname === item.href ? "bg-[#2ae9c9] text-[#041014]" : "bg-white/5 text-white/70")}>{item.name}</Link>)}
     </nav>
   </header>
 );
