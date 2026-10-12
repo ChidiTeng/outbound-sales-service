@@ -129,7 +129,14 @@ export const INITIAL_SIGNALS: Signal[] = ONBOARDED_BUSINESSES_DATA.flatMap(
             ? "Possible duplicate"
             : null,
       crm: j === 1,
-      date: `2026-10-0${9 - j}`,
+      date: `2026-10-0${
+        [
+          [9, 8, 6, 3],
+          [9, 7, 5, 2],
+          [8, 7, 4, 1],
+          [9, 6, 5, 3],
+        ][i % 4][j]
+      }`,
     })),
 );
 export const INITIAL_SCANS: Scan[] = INITIAL_BUSINESSES.flatMap(

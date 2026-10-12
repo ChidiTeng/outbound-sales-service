@@ -31,6 +31,8 @@ import {
   type Signal,
 } from "@/lib/social-listening";
 
+import { ListeningAnalytics } from "./listening-analytics";
+
 type View =
   | "Overview"
   | "Businesses"
@@ -372,105 +374,12 @@ export function SocialListeningView() {
               </div>
             ))}
           </div>
-          <div className="sl-overview-grid">
-            <section className="sl-panel sl-attention">
-              <div className="sl-panel-head">
-                <div>
-                  <h2>Where your attention matters</h2>
-                </div>
-                <Badge tone="amber">
-                  {pending.length + failures.length} items
-                </Badge>
-              </div>
-              <button
-                className="sl-attention-row"
-                onClick={() => changeView("Signal review")}
-              >
-                <span className="sl-icon-box">
-                  <ShieldCheck size={20} />
-                </span>
-                <div>
-                  <strong>Validate client buying signals</strong>
-                  <p>
-                    {pending.length} signals await an evidence check before
-                    admin approval.
-                  </p>
-                </div>
-                <ArrowRight size={18} />
-              </button>
-              <button
-                className="sl-attention-row"
-                onClick={() => changeView("Scan operations")}
-              >
-                <span className="sl-icon-box amber">
-                  <CircleAlert size={20} />
-                </span>
-                <div>
-                  <strong>
-                    {failures.length
-                      ? "Investigate a source interruption"
-                      : "Check scan operations"}
-                  </strong>
-                  <p>
-                    {failures.length
-                      ? `${businessName(failures[0].businessId)} · ${failures[0].source} scan failed`
-                      : "No failed runs in the selected business scope."}
-                  </p>
-                </div>
-                <ArrowRight size={18} />
-              </button>
-              <button
-                className="sl-attention-row"
-                onClick={() => changeView("Businesses")}
-              >
-                <span className="sl-icon-box">
-                  <Pause size={20} />
-                </span>
-                <div>
-                  <strong>Keep client monitoring on track</strong>
-                  <p>
-                    {scopedBusinesses.filter((b) => b.paused).length} businesses
-                    paused. Inspect their settings before resuming.
-                  </p>
-                </div>
-                <ArrowRight size={18} />
-              </button>
-            </section>
-            <section className="sl-panel sl-source-panel">
-              <div className="sl-panel-head">
-                <div>
-                  <h2>Where signals come from</h2>
-                </div>
-                <Radar size={20} />
-              </div>
-              <div className="sl-source-bars">
-                {SOURCES.map((s) => {
-                  const count = scopedSignals.filter(
-                    (item) => item.source === s,
-                  ).length;
-                  return (
-                    <div key={s}>
-                      <div>
-                        <span>{s}</span>
-                        <strong>{count} signals</strong>
-                      </div>
-                      <div className="sl-bar">
-                        <span
-                          style={{
-                            width: `${(count / Math.max(1, scopedSignals.length)) * 100}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="sl-footnote">
-                Captured evidence by source, including historical signals from
-                sources that are now disabled.
-              </p>
-            </section>
-          </div>
+          <ListeningAnalytics
+            key={scope}
+            signals={scopedSignals}
+            businesses={scopedBusinesses}
+            onBusiness={openBusiness}
+          />
           <section className="sl-panel sl-portfolio-panel">
             <div className="sl-panel-head">
               <div>

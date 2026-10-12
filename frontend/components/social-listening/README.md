@@ -6,7 +6,7 @@ This is a cross-business oversight workspace. Client account identities and pros
 
 ## Views
 
-- **Overview:** scoped monitoring counts, review backlog, failed scans, source distribution, and client portfolio.
+- **Overview:** scoped monitoring counts and four animated analytics charts: capture trends (7/14 days), source distribution, stacked client review status, and buying-stage mix with average intent scores. Client bars open their business workspace. Charts use the same signals as the portfolio and review queue, with keyboard inspection and expandable data tables. The date range ends at the 09 Oct 2026 fixture snapshot; capture dates are illustrative and include zero-activity days. Approved trend values describe current review status grouped by capture date, not historical approval events. Animations begin when each chart scrolls into view and replay on re-entry, while respecting reduced-motion preferences. Line points, source segments, client bars, and buying stages expose hover/focus tooltips with exact values.
 - **Businesses:** searchable business selector, ICP summary, monitoring configuration, recent evidence, pause/resume, and manual scan queueing.
 - **Signal review:** cross-business search, source/status filters, pagination, CSV export, bulk review, and an evidence drawer. Approve, suppress, and return-to-review actions require a reason.
 - **Scan operations:** per-source run summaries, run history, failure diagnostics, and retry queueing. Paused clients and clients with queued runs cannot queue another scan.
