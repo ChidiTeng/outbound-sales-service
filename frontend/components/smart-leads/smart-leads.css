@@ -519,3 +519,110 @@
     max-height: 480px;
   }
 }
+
+/* One dashboard elevation for every top-level Smart Leads surface. */
+.sp-root .sl-panel {
+  box-shadow: var(--outreach-shadow);
+}
+.sp-root .sp-client-list {
+  background: linear-gradient(155deg, #efe7f3, #e1d7e9);
+  color: #241d2d;
+}
+.sp-client-list .sp-client-filters input,
+.sp-client-list .sp-client-filters select {
+  background: #fff;
+}
+.sp-root .sp-client-list .sl-business-item:not(.active):hover {
+  background: #fff9;
+}
+.sp-coverage-chart {
+  padding: 0 26px 24px;
+}
+.sp-coverage-axis {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 90px 12px 120px;
+  color: #626879;
+  font-size: 10px;
+}
+.sp-root .sp-coverage-row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) 80px;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+  text-align: left;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  padding: 12px 0;
+}
+.sp-root .sp-coverage-row:hover,
+.sp-root .sp-coverage-row[aria-pressed="true"] {
+  background: #f2edf5;
+}
+.sp-coverage-row > span:first-child {
+  font-size: 12px;
+}
+.sp-coverage-row > strong {
+  font-size: 18px;
+  color: #673c72;
+  text-align: right;
+}
+.sp-coverage-row strong small {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: #626879;
+}
+.sp-coverage-plot {
+  position: relative;
+}
+.sp-coverage-plot .sp-signal-track {
+  height: 26px;
+  border-radius: 5px;
+  background:
+    repeating-linear-gradient(
+      to right,
+      #e8e2ed 0,
+      #e8e2ed 1px,
+      transparent 1px,
+      transparent 25%
+    ),
+    #f5f3f6;
+}
+.sp-coverage-fill {
+  border-radius: 5px;
+  transform-origin: left;
+}
+.crm-chart.is-visible .sp-coverage-fill {
+  animation: sp-coverage-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes sp-coverage-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@media (max-width: 760px) {
+  .sp-coverage-chart {
+    padding: 0 18px 20px;
+  }
+  .sp-coverage-axis {
+    margin-left: 90px;
+    margin-right: 50px;
+  }
+  .sp-root .sp-coverage-row {
+    grid-template-columns: 80px minmax(0, 1fr) 40px;
+  }
+  .sp-coverage-row strong small {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .crm-chart.is-visible .sp-coverage-fill {
+    animation: none;
+  }
+}

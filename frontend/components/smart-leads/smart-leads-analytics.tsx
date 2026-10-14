@@ -27,6 +27,7 @@ export function SmartLeadsAnalytics({
     "touches",
   );
   const [hoverDay, setHoverDay] = useState<number | null>(null);
+  const [hoverSignal, setHoverSignal] = useState<string | null>(null);
   const [hoverTier, setHoverTier] = useState<ProspectTier | null>(null);
   const data = getBusinessVelocityData(business.id);
   const max = Math.max(1, ...data.map((d) => d[metric]));
@@ -236,14 +237,27 @@ export function SmartLeadsAnalytics({
           </p>
         </ChartPanel>
       </div>
-      <section className="sl-panel sp-signals">
+      <ChartPanel className="sp-signals">
         <div className="sl-panel-head">
           <div>
             <h2>Buying-signal coverage</h2>
-            <p>Choose a signal to narrow the prospect directory.</p>
+            <p>
+              Share of this client’s sample pool matching each buying signal.
+            </p>
           </div>
         </div>
-        <div className="sp-signal-controls">
+        <div
+          className="sp-coverage-chart"
+          role="group"
+          aria-label="Buying-signal coverage chart"
+        >
+          <div className="sp-coverage-axis">
+            <span>0%</span>
+            <span>25%</span>
+            <span>50%</span>
+            <span>75%</span>
+            <span>100%</span>
+          </div>
           {[
             { key: "hiring", name: "Hiring growth" },
             { key: "funding", name: "Funding" },
@@ -256,20 +270,45 @@ export function SmartLeadsAnalytics({
             return (
               <button
                 key={item.key}
+                className="sp-coverage-row"
+                aria-label={`${item.name}: ${count} of ${business.prospects.length} prospects, ${Math.round((count / Math.max(1, business.prospects.length)) * 100)} percent. Filter prospects`}
+                onMouseEnter={() => setHoverSignal(item.key)}
+                onMouseLeave={() => setHoverSignal(null)}
+                onFocus={() => setHoverSignal(item.key)}
+                onBlur={() => setHoverSignal(null)}
                 aria-pressed={selectedSignal === item.key}
                 onClick={() =>
                   onSignal(selectedSignal === item.key ? "all" : item.key)
                 }
               >
                 <span>{item.name}</span>
-                <strong>{count}</strong>
-                <span className="sp-signal-track">
-                  <span
-                    style={{
-                      width: `${(count / Math.max(1, business.prospects.length)) * 100}%`,
-                    }}
-                  />
+                <span className="sp-coverage-plot">
+                  {hoverSignal === item.key && (
+                    <ChartTooltip>
+                      <strong>{item.name}</strong>
+                      <span>
+                        {count} of {business.prospects.length} prospects ·{" "}
+                        {Math.round(
+                          (count / Math.max(1, business.prospects.length)) *
+                            100,
+                        )}
+                        %
+                      </span>
+                    </ChartTooltip>
+                  )}
+                  <span className="sp-signal-track">
+                    <span
+                      className="crm-animated sp-coverage-fill"
+                      style={{
+                        width: `${(count / Math.max(1, business.prospects.length)) * 100}%`,
+                      }}
+                    />
+                  </span>
                 </span>
+                <strong>
+                  {count}
+                  <small> {count === 1 ? "prospect" : "prospects"}</small>
+                </strong>
               </button>
             );
           })}
@@ -278,7 +317,7 @@ export function SmartLeadsAnalytics({
           Counts use the displayed sample records. A prospect can match more
           than one buying signal.
         </p>
-      </section>
+      </ChartPanel>
     </>
   );
 }
