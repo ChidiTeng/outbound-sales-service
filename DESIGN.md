@@ -144,6 +144,12 @@ An IntersectionObserver at 20% intersection toggles chart visibility. Line drawi
 
 Hover and keyboard focus show exact values. Focusable line date regions, donut arcs and legends, and stage/client buttons expose accessible labels; stage and client bars also navigate to relevant records or workspaces. Trend, stage, and value charts include expandable data tables. Tooltip text contrasts with its host: wine on white charts, white on the wine donut.
 
+## Smart Leads workspace
+
+Smart Leads follows the same teal canvas, white workspace, wine analysis, lavender support, and mint active controls. Client ownership stays visible above sample-pool metrics. An intent donut and selectable outreach bars lead into buying-signal coverage and the prospect directory. Chart segments and coverage controls narrow the directory; evidence opens in a native dialog with local review notes.
+
+Client selector panels on Smart Leads, Social Listening, and CRM stick below the navigation at desktop widths. Their offset uses the measured header height and their height fits the viewport, with internal scrolling for longer lists. Mobile Smart Leads uses a compact client dropdown and expandable advanced filters.
+
 ## Do's and Don'ts
 
 ### Do:

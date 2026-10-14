@@ -1964,3 +1964,15 @@
 
 .sla-business-bar:first-child > .sla-tooltip { left: 0; transform: none; }
 .sla-business-bar:last-child > .sla-tooltip { left: auto; right: 0; transform: none; }
+
+/* Pin client selectors below the measured navigation; keep lists reachable. */
+@media (min-width: 761px) {
+  .sl-business-workspace > .sl-business-list {
+    position: sticky;
+    top: calc(var(--admin-header-height, 113px) + 16px);
+    max-height: calc(100dvh - var(--admin-header-height, 113px) - 32px);
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+  }
+}
