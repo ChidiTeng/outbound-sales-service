@@ -8,6 +8,11 @@
 .sp-detail {
   min-width: 0;
 }
+/* ChartPanel removes margins for grid charts; this standalone chart needs
+   the same separation as the other stacked workspace panels. */
+.sp-detail > .sp-signals {
+  margin-bottom: 28px;
+}
 .sp-client-list .sl-panel-head {
   padding: 22px 20px;
 }
