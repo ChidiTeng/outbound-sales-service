@@ -1334,9 +1334,9 @@
   gap: calc(20 * var(--ds));
 }
 
-/* Business Profile Header (Off-White Theme) */
+/* Business Profile Header (Pure White Container) */
 .business-profile-header {
-  background: #f8fafc;
+  background: #FFFFFF;
   border: 1px solid #e2e8f0;
   border-radius: calc(20 * var(--ds));
   padding: calc(20 * var(--ds)) calc(24 * var(--ds));
@@ -1416,58 +1416,105 @@
   text-decoration: underline;
 }
 
-/* Clean Telemetry Cards (Off-White Theme) */
+/* Solid Color Telemetry Cards (10x Design System) */
 .clean-telemetry-strip {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: calc(12 * var(--ds));
 }
 .telemetry-pill {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
   border-radius: calc(14 * var(--ds));
-  padding: calc(12 * var(--ds)) calc(16 * var(--ds));
+  padding: calc(13 * var(--ds)) calc(16 * var(--ds));
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
 }
-.telemetry-pill.highlight {
-  background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
-  border: 1.5px solid #a855f7;
-  box-shadow: 
-    0 0 0 1px rgba(168, 85, 247, 0.2),
-    0 calc(2 * var(--ds)) calc(8 * var(--ds)) rgba(168, 85, 247, 0.08);
+.telemetry-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
-.telemetry-label {
+
+/* Card 1: Purple from the Dashboard */
+.clean-telemetry-strip > .telemetry-pill:nth-child(1),
+.telemetry-pill.telemetry-purple {
+  background: #c974f4;
+  border-color: rgba(168, 85, 247, 0.25);
+}
+
+/* Card 2: Pink color used as the border line */
+.clean-telemetry-strip > .telemetry-pill:nth-child(2),
+.telemetry-pill.telemetry-pink {
+  background: #ff70a6;
+  border-color: rgba(236, 72, 153, 0.25);
+}
+
+/* Card 3: Flat Bright Green */
+.clean-telemetry-strip > .telemetry-pill:nth-child(3),
+.telemetry-pill.telemetry-green {
+  background: #2ae9c9;
+  border-color: rgba(42, 233, 201, 0.35);
+}
+
+/* Card 4: Purple from Activity Overview (#39233a) */
+.clean-telemetry-strip > .telemetry-pill:nth-child(4),
+.telemetry-pill.telemetry-purple-overview {
+  background: #39233a;
+  border-color: rgba(191, 116, 231, 0.45);
+  box-shadow: 0 calc(2 * var(--ds)) calc(10 * var(--ds)) rgba(191, 116, 231, 0.32), 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+.clean-telemetry-strip > .telemetry-pill:nth-child(4):hover,
+.telemetry-pill.telemetry-purple-overview:hover {
+  box-shadow: 0 calc(4 * var(--ds)) calc(16 * var(--ds)) rgba(191, 116, 231, 0.5);
+}
+.clean-telemetry-strip > .telemetry-pill:nth-child(4) .telemetry-label,
+.telemetry-pill.telemetry-purple-overview .telemetry-label {
+  color: rgba(253, 253, 253, 0.78);
+}
+.clean-telemetry-strip > .telemetry-pill:nth-child(4) .telemetry-val,
+.telemetry-pill.telemetry-purple-overview .telemetry-val {
+  color: #ffffff;
+}
+.clean-telemetry-strip > .telemetry-pill:nth-child(4) .telemetry-sub,
+.telemetry-pill.telemetry-purple-overview .telemetry-sub {
+  color: rgba(253, 253, 253, 0.88);
+}
+
+/* Clean Telemetry Pill Highlight Reset */
+.clean-telemetry-strip .telemetry-pill.highlight {
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+}
+
+/* High-Contrast Typography for Solid Cards */
+.clean-telemetry-strip .telemetry-label {
   display: block;
   font-size: calc(9.5 * var(--ds));
   text-transform: uppercase;
-  letter-spacing: calc(0.5 * var(--ds));
-  color: #64748b;
+  letter-spacing: calc(0.6 * var(--ds));
+  color: rgba(7, 11, 22, 0.72);
   font-weight: 700;
 }
-.telemetry-val {
+.clean-telemetry-strip .telemetry-val {
   display: block;
-  font-size: calc(22 * var(--ds));
+  font-size: calc(23 * var(--ds));
   font-weight: 800;
-  color: #0f172a;
+  color: #070b16;
   margin: calc(3 * var(--ds)) 0 calc(2 * var(--ds));
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
 }
-.telemetry-sub {
+.clean-telemetry-strip .telemetry-sub {
   display: block;
-  font-size: calc(10 * var(--ds));
-  color: #64748b;
-  font-weight: 500;
-}
-.telemetry-sub.text-purple {
-  color: #7c3aed !important;
+  font-size: calc(10.5 * var(--ds));
+  color: rgba(7, 11, 22, 0.82);
   font-weight: 600;
 }
-.telemetry-sub.text-mint {
-  color: #0d9488 !important;
-  font-weight: 600;
+.clean-telemetry-strip .telemetry-sub.text-purple,
+.clean-telemetry-strip .telemetry-sub.text-mint {
+  color: rgba(7, 11, 22, 0.88) !important;
+  font-weight: 700;
 }
 
 /* ==========================================================================
